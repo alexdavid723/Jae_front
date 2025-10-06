@@ -50,28 +50,29 @@ export default function MenuPrincipalPage() {
 
   // Opciones de menú con roles específicos
   const opcionesBase: Opcion[] = [
-    // Administrador / Superadmin
-    {
-      titulo: "Gestión Institucional",
-      descripcion: "Planes, módulos y asignaciones.",
-      icon: GraduationCap,
-      ruta: "/institutional/plan",
-      roles: ["administrador", "superadmin"],
-    },
-    {
-      titulo: "Catálogos",
-      descripcion: "Especialidades, docentes y más.",
-      icon: BookOpen,
-      ruta: "/catalogs/specialties",
-      roles: ["administrador", "superadmin"],
-    },
     {
       titulo: "Usuarios",
       descripcion: "Gestión de estudiantes y personal.",
       icon: Users,
-      ruta: "/users",
+      ruta: "/usuarios",
       roles: ["administrador", "superadmin"],
     },
+    {
+      titulo: "Catálogos",
+      descripcion: "plan, asignaciones, cursos y más.",
+      icon: BookOpen,
+      ruta: "/catalogs/specialties",
+      roles: ["administrador", "superadmin"],
+    },
+    // Administrador / Superadmin
+    {
+      titulo: "Gestión Institucional",
+      descripcion: "Matriculas, Evaluaciones y más.",
+      icon: GraduationCap,
+      ruta: "/institutional/plan",
+      roles: ["administrador", "superadmin"],
+    },
+
     {
       titulo: "Reportes",
       descripcion: "Ver reportes de actividad y estadísticas.",

@@ -1,45 +1,21 @@
-import { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { useState, useMemo } from "react";
+import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import clsx from "clsx";
-// 1. Importar el nuevo ícono
-import { School, ClipboardList, Clipboard } from "lucide-react";
+import {
+  School,
+  ClipboardList,
+  Clipboard,
+  Home,
+  ChevronDown,
+  Users,
+
+} from "lucide-react";
 
 interface Section {
   name: string;
   icon: React.ElementType;
   items: { name: string; path: string }[];
 }
-
-const sections: Section[] = [
-  {
-    name: "Gestión Institucional",
-    icon: School,
-    items: [
-      { name: "Registrar plan", path: "/institutional/plan" },
-      { name: "Registrar módulos", path: "/institutional/modules" },
-      { name: "Asignaciones", path: "/institutional/assignments" },
-    ],
-  },
-  // 2. Agregar el nuevo menú de Matrícula aquí
-  {
-    name: "Matrícula",
-    icon: Clipboard,
-    items: [
-      { name: "Proceso de Admisión", path: "/enrollment/admission" },
-      { name: "Registro de Matrícula", path: "/enrollment/register" },
-      { name: "Consulta de Matrículas", path: "/enrollment/list" },
-      { name: "Rectificación de Matrícula", path: "/enrollment/modification" },
-    ],
-  },
-  {
-    name: "Catálogos",
-    icon: ClipboardList,
-    items: [
-      { name: "Especialidades", path: "/catalogs/specialties" },
-      { name: "Docentes", path: "/catalogs/teachers" },
-    ],
-  },
-];
 
 interface SidebarProps {
   isOpen: boolean;
@@ -48,6 +24,65 @@ interface SidebarProps {
 
 export default function Sidebar({ isOpen, onClose }: SidebarProps) {
   const [openSections, setOpenSections] = useState<number[]>([0]);
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // 🔹 Aquí decides qué mostrar según la ruta actual
+  const sections: Section[] = useMemo(() => {
+    if (location.pathname.startsWith("/usuarios")) {
+      return [
+        {
+          name: "Gestión de Usuarios",
+          icon: Users,
+          items: [
+            { name: "Administrar Usuarios (docentes y alumnos)", path: "/usuarios/gestionarusuarios" },
+            { name: "Lista de usuarios", path: "/usuarios/lista" },
+          ],
+        },
+      ];
+    }
+
+    if (location.pathname.startsWith("/institutional")) {
+      return [
+        {
+          name: "Gestión Institucional",
+          icon: School,
+          items: [
+            { name: "Registrar plan", path: "/institutional/plan" },
+            { name: "Registrar módulos", path: "/institutional/modules" },
+            { name: "Asignaciones", path: "/institutional/assignments" },
+          ],
+        },
+      ];
+    }
+
+    if (location.pathname.startsWith("/enrollment")) {
+      return [
+        {
+          name: "Matrícula",
+          icon: Clipboard,
+          items: [
+            { name: "Proceso de Admisión", path: "/enrollment/admission" },
+            { name: "Registro de Matrícula", path: "/enrollment/register" },
+            { name: "Consulta de Matrículas", path: "/enrollment/list" },
+            { name: "Rectificación de Matrícula", path: "/enrollment/modification" },
+          ],
+        },
+      ];
+    }
+
+    // 🔸 Por defecto (u otra ruta)
+    return [
+      {
+        name: "Catálogos",
+        icon: ClipboardList,
+        items: [
+          { name: "Especialidades", path: "/catalogs/specialties" },
+          { name: "Docentes", path: "/catalogs/teachers" },
+        ],
+      },
+    ];
+  }, [location.pathname]);
 
   const toggleSection = (index: number) => {
     setOpenSections((prev) =>
@@ -58,65 +93,83 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
   return (
     <aside
       className={clsx(
-        "bg-gradient-to-b from-white to-slate-50 border-r border-slate-200 shadow-lg transition-transform duration-300 ease-in-out flex flex-col h-[calc(100vh-64px)] z-40",
-        // Mobile overlay
-        "fixed top-16 left-0 w-64 lg:static",
+        "backdrop-blur-xl bg-white/60 border-r border-slate-200 shadow-2xl transition-transform duration-500 ease-in-out flex flex-col h-[calc(100vh-64px)] z-40",
+        "fixed top-16 left-0 w-72 lg:w-64 lg:static",
         isOpen ? "translate-x-0" : "-translate-x-full"
       )}
     >
-      <nav className="p-4 space-y-2 overflow-y-auto flex-1">
+      <nav className="p-5 space-y-3 overflow-y-auto flex-1">
         {sections.map((section, idx) => {
           const Icon = section.icon;
+          const isOpenSection = openSections.includes(idx);
+
           return (
-            <div key={idx}>
+            <div
+              key={idx}
+              className="bg-white/70 hover:bg-white/90 border border-slate-200/60 rounded-xl shadow-sm transition-all duration-300"
+            >
               <button
                 onClick={() => toggleSection(idx)}
-                className="flex w-full items-center justify-between px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-sky-50"
+                className="flex w-full items-center justify-between px-4 py-3 rounded-lg text-sm font-semibold text-slate-700 hover:text-sky-700 transition"
               >
                 <span className="flex items-center space-x-3">
-                  <Icon className="w-5 h-5 text-slate-600" />
-                  {section.name}
+                  <Icon className="w-5 h-5 text-sky-500" />
+                  <span>{section.name}</span>
                 </span>
-                <svg
+                <ChevronDown
                   className={clsx(
-                    "w-4 h-4 text-slate-500 transition-transform duration-200",
-                    openSections.includes(idx) && "rotate-180"
+                    "w-5 h-5 text-slate-500 transition-transform duration-300",
+                    isOpenSection && "rotate-180 text-sky-500"
                   )}
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
+                />
               </button>
 
-              {openSections.includes(idx) && (
-                <ul className="mt-1 pl-6 space-y-1">
-                  {section.items.map((item) => (
-                    <li key={item.path}>
-                      <NavLink
-                        to={item.path}
-                        end
-                        onClick={() => window.innerWidth < 1024 && onClose()}
-                        className={({ isActive }) =>
-                          clsx(
-                            "block px-3 py-1.5 text-sm rounded-md transition-colors duration-200",
-                            isActive
-                              ? "bg-sky-100 text-sky-700 font-medium shadow-sm"
-                              : "text-slate-600 hover:bg-slate-100 hover:text-sky-700"
-                          )
-                        }
-                      >
-                        {item.name}
-                      </NavLink>
-                    </li>
-                  ))}
-                </ul>
-              )}
+              <ul
+                className={clsx(
+                  "overflow-hidden transition-all duration-500 ease-in-out",
+                  isOpenSection ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+                )}
+              >
+                {section.items.map((item) => (
+                  <li key={item.path}>
+                    <NavLink
+                      to={item.path}
+                      end
+                      onClick={() => window.innerWidth < 1024 && onClose()}
+                      className={({ isActive }) =>
+                        clsx(
+                          "block px-10 py-2 text-sm rounded-md transition-all duration-300",
+                          isActive
+                            ? "bg-sky-100 text-sky-700 font-semibold shadow-sm"
+                            : "text-slate-600 hover:bg-sky-50 hover:text-sky-700"
+                        )
+                      }
+                    >
+                      {item.name}
+                    </NavLink>
+                  </li>
+                ))}
+              </ul>
             </div>
           );
         })}
       </nav>
+
+      {/* 🌟 Botón elegante para regresar al menú principal */}
+      {location.pathname !== "/menu-principal" && (
+        <div className="p-5 border-t border-slate-200 bg-white/70 backdrop-blur-md">
+          <button
+            onClick={() => navigate("/menu-principal")}
+            className="group w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg 
+              bg-gradient-to-r from-sky-500 to-blue-600 text-white font-semibold shadow-md
+              hover:from-sky-600 hover:to-blue-700 transition-all duration-300 ease-out
+              hover:scale-[1.03] active:scale-[0.97]"
+          >
+            <Home className="w-5 h-5 group-hover:rotate-12 transition-transform duration-300" />
+            <span>Volver al menú principal</span>
+          </button>
+        </div>
+      )}
     </aside>
   );
 }

@@ -22,15 +22,29 @@ const EnrollmentModificationPage = lazy(() =>
   import("../../features/enrollment/enrollmentprocess/pages/EnrollmentModificationPage")
 );
 
-// 🔹 Páginas de auth y portal
+// 🔹 Páginas de autenticación y portal
 const LoginPage = lazy(() => import("../../features/auth/pages/LoginPage"));
-const ForgotPasswordPage = lazy(() => import("../../features/auth/pages/ForgotPasswordPage"));
-const ResetPasswordPage = lazy(() => import("../../features/auth/pages/ResetPasswordPage"));
-const MenuPrincipalPage = lazy(() => import("../../features/portal/pages/MenuPrincipalPage"));
-const UnauthorizedPage = lazy(() => import("../../shared/components/auth/UnauthorizedPage"));
+const ForgotPasswordPage = lazy(() =>
+  import("../../features/auth/pages/ForgotPasswordPage")
+);
+const ResetPasswordPage = lazy(() =>
+  import("../../features/auth/pages/ResetPasswordPage")
+);
+const MenuPrincipalPage = lazy(() =>
+  import("../../features/portal/pages/MenuPrincipalPage")
+);
+const UnauthorizedPage = lazy(() =>
+  import("../../shared/components/auth/UnauthorizedPage")
+);
+
+// 🔹 Páginas de Usuarios
+const UsersPage = lazy(() => import("../../features/users/pages/UsersPage"));
+const GestionarUsuariosPage = lazy(() =>
+  import("../../features/users/pages/GestionarUsuariosPage")
+);
 
 export const router = createBrowserRouter([
-  // Login y auth
+  // 🔸 Rutas públicas (auth)
   {
     path: "/",
     element: <LoginPage />,
@@ -43,7 +57,12 @@ export const router = createBrowserRouter([
     path: "/reset-password",
     element: <ResetPasswordPage />,
   },
-  // Portal principal
+  {
+    path: "/unauthorized",
+    element: <UnauthorizedPage />,
+  },
+
+  // 🔸 Portal principal protegido
   {
     path: "/menu-principal",
     element: (
@@ -52,12 +71,8 @@ export const router = createBrowserRouter([
       </ProtectedRoute>
     ),
   },
-  // Unauthorized
-  {
-    path: "/unauthorized",
-    element: <UnauthorizedPage />,
-  },
-  // Rutas internas con Layout
+
+  // 🔸 Rutas internas con Layout (usa Sidebar y Topbar)
   {
     path: "/",
     element: (
@@ -66,12 +81,67 @@ export const router = createBrowserRouter([
       </ProtectedRoute>
     ),
     children: [
-      { path: "institutional/plan", element: <ProtectedRoute roles={["administrador"]}><PlanWizardPage /></ProtectedRoute> },
-      { path: "enrollment/admission", element: <ProtectedRoute roles={["administrador"]}><AdmissionProcessPage /></ProtectedRoute> },
-      { path: "enrollment/register", element: <ProtectedRoute roles={["administrador"]}><EnrollmentRegistrationPage /></ProtectedRoute> },
-      { path: "enrollment/list", element: <ProtectedRoute roles={["administrador"]}><EnrollmentListPage /></ProtectedRoute> },
-      { path: "enrollment/modification", element: <ProtectedRoute roles={["administrador"]}><EnrollmentModificationPage /></ProtectedRoute> },
-      // Aquí podrías agregar rutas para estudiantes y docentes
+      // 🔹 Gestión Institucional
+      {
+        path: "institutional/plan",
+        element: (
+          <ProtectedRoute roles={["administrador"]}>
+            <PlanWizardPage />
+          </ProtectedRoute>
+        ),
+      },
+
+      // 🔹 Matrícula
+      {
+        path: "enrollment/admission",
+        element: (
+          <ProtectedRoute roles={["administrador"]}>
+            <AdmissionProcessPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "enrollment/register",
+        element: (
+          <ProtectedRoute roles={["administrador"]}>
+            <EnrollmentRegistrationPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "enrollment/list",
+        element: (
+          <ProtectedRoute roles={["administrador"]}>
+            <EnrollmentListPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "enrollment/modification",
+        element: (
+          <ProtectedRoute roles={["administrador"]}>
+            <EnrollmentModificationPage />
+          </ProtectedRoute>
+        ),
+      },
+
+      // 🔹 Gestión de Usuarios
+      {
+        path: "usuarios",
+        element: (
+          <ProtectedRoute roles={["administrador", "superadmin"]}>
+            <UsersPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "usuarios/gestionarusuarios",
+        element: (
+          <ProtectedRoute roles={["administrador", "superadmin"]}>
+            <GestionarUsuariosPage />
+          </ProtectedRoute>
+        ),
+      },
     ],
   },
 ]);

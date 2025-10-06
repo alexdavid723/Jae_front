@@ -1,7 +1,7 @@
-// src/features/auth/pages/LoginPage.tsx
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
+import { Mail, Lock, Eye, EyeOff, Loader2 } from 'lucide-react'
 
 export default function LoginPage() {
   const navigate = useNavigate()
@@ -32,6 +32,7 @@ export default function LoginPage() {
       setTimeout(() => navigate('/menu-principal'), 1000)
     } catch (err: unknown) {
       if (axios.isAxiosError(err) && err.response) {
+        // Muestra el mensaje de error del servidor
         setMessage(`❌ ${err.response.data.message || "Credenciales inválidas"}`)
       } else if (err instanceof Error) {
         setMessage("❌ Error: " + err.message)
@@ -44,45 +45,55 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="grid lg:grid-cols-2 min-h-screen bg-gradient-to-br from-white via-slate-50 to-sky-50">
-      {/* Lado izquierdo: formulario */}
-      <div className="flex items-center justify-center p-6 lg:p-12">
-        <div className="w-full max-w-sm">
-          <h1 className="text-3xl font-bold text-slate-900 mb-2">Bienvenido</h1>
-          <p className="text-slate-500 mb-8">Accede a tu cuenta para continuar</p>
+    <main className="grid lg:grid-cols-2 min-h-screen bg-slate-100 font-inter">
+      {/* Lado izquierdo: formulario centrado */}
+      <div className="flex items-center justify-center p-8 sm:p-16">
+        <div className="w-full max-w-sm bg-white p-10 sm:p-12 rounded-3xl shadow-3xl shadow-slate-300/50 border border-white transition-all duration-500 transform hover:scale-[1.005]">
+          
+          <h1 className="text-4xl font-black text-slate-900 mb-2 tracking-tighter">
+            Bienvenido
+          </h1>
+          <p className="text-slate-500 mb-10 text-lg">
+            Accede a tu cuenta para continuar
+          </p>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Email */}
+          <form onSubmit={handleSubmit} className="space-y-7">
+            
+            {/* Campo de Correo */}
             <div>
               <label
                 htmlFor="email"
-                className="block text-sm font-medium text-slate-700 mb-1"
+                className="block text-sm font-medium text-slate-700 mb-2"
               >
-                Correo
+                Correo Electrónico
               </label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                value={form.email}
-                onChange={handleChange}
-                placeholder="tucorreo@institucion.edu"
-                className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm
-                           placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-500
-                           transition-shadow"
-                required
-              />
+              <div className="relative">
+                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400" />
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  value={form.email}
+                  onChange={handleChange}
+                  placeholder="tucorreo@institucion.edu"
+                  className="w-full rounded-xl border border-slate-300 bg-white pl-10 pr-4 py-3 text-sm
+                             placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500
+                             transition-all shadow-inner hover:border-indigo-300"
+                  required
+                />
+              </div>
             </div>
 
-            {/* Contraseña */}
+            {/* Campo de Contraseña */}
             <div>
               <label
                 htmlFor="password"
-                className="block text-sm font-medium text-slate-700 mb-1"
+                className="block text-sm font-medium text-slate-700 mb-2"
               >
                 Contraseña
               </label>
               <div className="relative">
+                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400" />
                 <input
                   id="password"
                   name="password"
@@ -90,26 +101,19 @@ export default function LoginPage() {
                   value={form.password}
                   onChange={handleChange}
                   placeholder="••••••••"
-                  className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 pr-10 text-sm
-                             placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-500
-                             transition-shadow"
+                  className="w-full rounded-xl border border-slate-300 bg-white pl-10 pr-10 py-3 text-sm
+                             placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500
+                             transition-all shadow-inner hover:border-indigo-300"
                   required
                 />
+                {/* Toggle de Contraseña con iconos de Lucide */}
                 <button
                   type="button"
                   onClick={() => setShowPwd(!showPwd)}
-                  className="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-500 hover:text-sky-600"
+                  className="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-500 hover:text-indigo-600 transition-colors"
+                  aria-label={showPwd ? "Ocultar contraseña" : "Mostrar contraseña"}
                 >
-                  {showPwd ? (
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
-                    </svg>
-                  ) : (
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                    </svg>
-                  )}
+                  {showPwd ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
               </div>
             </div>
@@ -118,27 +122,34 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full rounded-lg bg-sky-600 px-4 py-2.5 text-sm font-semibold
-                         text-white shadow-sm hover:bg-sky-700 focus:outline-none focus:ring-2
-                         focus:ring-sky-500 focus:ring-offset-2 transition-all disabled:opacity-50"
+              className="w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-700 px-4 py-3 text-base font-semibold
+                         text-white shadow-xl shadow-indigo-500/50 hover:from-indigo-700 hover:to-violet-800 focus:outline-none focus:ring-4
+                         focus:ring-indigo-300 transition-all duration-300 disabled:opacity-60 disabled:shadow-none disabled:cursor-not-allowed transform hover:-translate-y-0.5"
             >
-              {loading ? "Ingresando..." : "Ingresar"}
+              {loading ? (
+                <>
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                  <span>Ingresando...</span>
+                </>
+              ) : (
+                "Ingresar"
+              )}
             </button>
           </form>
 
-          {/* Mensajes de error o éxito */}
+          {/* Mensajes de error o éxito con mejor estilo */}
           {message && (
-            <p className={`mt-4 text-center text-sm font-medium ${message.startsWith('✅') ? 'text-green-600' : 'text-red-600'}`}>
+            <div className={`mt-6 p-3 rounded-xl text-sm text-center font-medium transition-all duration-300 ${message.startsWith('✅') ? 'bg-green-50 text-green-700 border border-green-300' : 'bg-red-50 text-red-700 border border-red-300'}`}>
               {message}
-            </p>
+            </div>
           )}
 
           {/* Enlace de recuperación de contraseña */}
-          <p className="mt-6 text-center text-sm text-slate-500">
+          <p className="mt-8 text-center text-sm text-slate-500">
             ¿Olvidaste tu contraseña?{' '}
             <button
               type="button"
-              className="font-medium text-sky-600 hover:text-sky-700"
+              className="font-semibold text-indigo-600 hover:text-indigo-700 transition-colors"
               onClick={() => navigate('/forgot-password')}
             >
               Recupérala aquí
@@ -147,13 +158,13 @@ export default function LoginPage() {
         </div>
       </div>
 
-      {/* Lado derecho: imagen */}
-      <div className="hidden lg:block bg-gradient-to-br from-sky-100 via-white to-slate-100">
-        <div className="flex items-center justify-center h-full">
+      {/* Lado derecho: Imagen con degradado sutil */}
+      <div className="hidden lg:block bg-gradient-to-tr from-slate-200 to-indigo-100 relative overflow-hidden">
+        <div className="flex items-center justify-center h-full p-16">
           <img
-            src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=800&q=80"
-            alt="Ilustración"
-            className="max-w-md object-cover rounded-2xl shadow-xl"
+            src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1200&q=80"
+            alt="Ilustración profesional de trabajo colaborativo"
+            className="w-full h-auto max-w-xl object-cover rounded-[2rem] shadow-3xl shadow-indigo-400/40 transform hover:scale-[1.01] transition-transform duration-500"
           />
         </div>
       </div>

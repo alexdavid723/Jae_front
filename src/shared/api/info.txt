@@ -1,0 +1,6 @@
+Archivo / Función	¿Va aquí?	¿Por qué?
+http.ts → instancia base de Axios con interceptores	✅	Todos los módulos usarán la misma configuración (baseURL, token, manejo de errores).
+request.ts → wrapper request.get('/users')	✅	Reutilizas la instancia base sin repetir headers.
+endpoints.ts → constantes con rutas de API	✅	Evitas “magic strings” en cualquier módulo.
+createSpecialty.ts → función que llama POST /specialties	❌	Es lógica de negocio; va en features/institutional/api/.
+useStudents.ts → hook SWR/React Query	❌	Es lógica del dominio “students”; va en features/students/api/.

@@ -1,0 +1,15 @@
+//Contextos globales (Auth, Theme, etc.).
+AuthProvider.tsx, ThemeProvider.tsx
+Regla de oro
+Un Provider = Un contexto global
+Cero lógica de negocio; solo preparar el ambiente.
+Si no lo necesitas hoy, deja la carpeta vacía y créala cuando aparezca la necesidad.
+¿Qué guardar dentro?
+Table
+Copy
+Responsabilidad	Ejemplo de archivo	¿Qué hace?
+Autenticación	AuthProvider.tsx	Expone user, login(), logout() para toda la app.
+Tema claro/oscuro	ThemeProvider.tsx	Permite toggleTheme() y lee prefers-color-scheme.
+Config global (API, tokens)	ConfigProvider.tsx	Define baseURL, API_KEY, etc.
+Idiomas / i18n	I18nProvider.tsx	Carga diccionarios y expone t('key').
+Permisos / Roles	PermissionProvider.tsx	Decidir si el usuario puede ver o no un menú.

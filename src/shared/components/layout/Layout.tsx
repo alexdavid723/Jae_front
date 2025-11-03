@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import Header from "./Header";
-import Sidebar from "./Sidebar";
+import Sidebar from "../layout/sidebar/Sidebar"; // Asegúrate de que el path es correcto
 import { Outlet } from "react-router-dom";
 import clsx from "clsx";
 
@@ -42,7 +42,8 @@ export default function Layout() {
         )}
 
         {/* Sidebar */}
-        {sidebarOpen && <Sidebar isOpen={sidebarOpen} onClose={toggleSidebar} />}
+        {/* Se usa sidebarOpen para controlar si se renderiza, no solo la visibilidad */}
+        <Sidebar isOpen={sidebarOpen} onClose={toggleSidebar} />
 
         {/* Contenido principal */}
         <main
